@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Menetrend</string>
+    <string name="action_settings">Beállítások</string>
+    <string name="title_activity_main2">Menetrend</string>
+    <string name="end">Végállomás</string>
+    <string name="start">Indulópont</string>
+    <string name="src">Keresés</string>
+</resources>

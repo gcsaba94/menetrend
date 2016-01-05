@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">TimeTable</string>
+    <string name="action_settings">Settings</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="src">Search</string>
+    <string-array name="sources">
+        <item>Budapest</item>
+        <item>Debrecen</item>
+        <item>Eger</item>
+        <item>Gyöngyös</item>
+        <item>Heves</item>
+        <item>Kál</item>
+        <item>Miskolc</item>
+        <item>Tenk</item>
+    </string-array>
+    <string name="title_activity_main2">TimeTable</string>
+</resources>
