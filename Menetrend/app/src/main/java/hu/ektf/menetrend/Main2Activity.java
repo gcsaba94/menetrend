@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -93,15 +94,18 @@ public class Main2Activity extends AppCompatActivity {
                 list.add(i, new Jarat(var, cal, cal2));
             }
         //TODO read file
-        /*File sdCard = Environment.getExternalStorageDirectory();
-        //File file = new File(sdCard, "menetrend.txt");
-        InputStream is = getClass().getResourceAsStream("menetrend.txt");
+        String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(sdCard+"/MenetrendData/menetrend.txt");
+        //InputStream is = getClass().getResourceAsStream("menetrend.txt");
         try {
             Integer szamlalo = 0;
+            InputStream is = new FileInputStream(file);
             Reader reader = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(reader);
-            String line;
-            while ((line = br.readLine()) != null) {
+            String[] lines = Load(file);
+            //while ((line = br.readLine()) != null) {
+            for (String line: lines){
+
                 if ((line.endsWith(id.toString()) && line.startsWith(start))) {
                     String[] p = line.split("|");
                     Log.e("","nincs"+p[0]);
@@ -133,7 +137,7 @@ public class Main2Activity extends AppCompatActivity {
         }catch (Exception e){
             Log.e("Read","nincs"+e.getMessage());
         }
-        Log.v("Read", "Done");*/
+        Log.v("Read", "Done");
         JaratAdapter adapter = new JaratAdapter(Main2Activity.this, list);
         ls.setAdapter(adapter);
     }
@@ -149,6 +153,46 @@ public class Main2Activity extends AppCompatActivity {
         else if (dayOfWeek.toLowerCase() == "saturday")
             return 2;
         else return 1;
+    }
+
+    public static String[] Load(File file){
+        FileInputStream fis = null;
+        try
+        {
+            fis = new FileInputStream(file);
+        }
+        catch (FileNotFoundException e) {e.printStackTrace();}
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader br = new BufferedReader(isr);
+        String test;
+        int seged=0;
+        try
+        {
+            while ((test=br.readLine()) != null)
+            {
+                seged++;
+            }
+        }
+        catch (IOException e) {e.printStackTrace();}
+
+        try
+        {
+            fis.getChannel().position(0);
+        }
+        catch (IOException e) {e.printStackTrace();}
+        String[] array = new String[seged];
+        String line;
+        int i = 0;
+        try
+        {
+            while((line=br.readLine())!=null)
+            {
+                array[i] = line;
+                i++;
+            }
+        }
+        catch (IOException e) {e.printStackTrace();}
+        return array;
     }
 
     @Override
