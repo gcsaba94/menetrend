@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -57,15 +58,6 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Send reply", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, getIntent().getIntExtra("year", 0));
         cal.set(Calendar.MONTH, getIntent().getIntExtra("month", 0));
@@ -73,7 +65,7 @@ public class Main2Activity extends AppCompatActivity {
         Date dateRepresentation = cal.getTime();
         Integer id = getId(dateRepresentation);
         String start = getIntent().getStringExtra("start"), end = getIntent().getStringExtra("end");
-        if (start == end) {
+        if (start.contains(end)) {
             Intent intent = new Intent(Main2Activity.this, MainActivity.class);
             startActivity(intent);
         }
@@ -84,15 +76,6 @@ public class Main2Activity extends AppCompatActivity {
         var.add(end);
         Calendar calendar = (Calendar)cal.clone();
         Calendar cal2 = (Calendar)cal.clone();
-        Random r = new Random();
-            for (Integer i = 0; i < 24/id; i++) {
-                cal = (Calendar)calendar.clone();
-                cal.set(Calendar.HOUR_OF_DAY,r.nextInt(14)+6);
-                cal.set(Calendar.MINUTE,r.nextInt(59));
-                cal2 = (Calendar) cal.clone();
-                cal2.add(Calendar.MINUTE, r.nextInt(40)+10);
-                list.add(i, new Jarat(var, cal, cal2));
-            }
         //TODO read file
         String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
         File file = new File(sdCard+"/MenetrendData/menetrend.txt");
@@ -103,21 +86,20 @@ public class Main2Activity extends AppCompatActivity {
             Reader reader = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(reader);
             String[] lines = Load(file);
-            //while ((line = br.readLine()) != null) {
-            for (String line: lines){
-
-                if ((line.endsWith(id.toString()) && line.startsWith(start))) {
-                    String[] p = line.split("|");
-                    Log.e("","nincs"+p[0]);
+            for (Integer i = 0; i < lines.length; i++){
+                //textView.append(lines[i]+"\n");
+                if ((lines[i].endsWith(" "+id.toString()) && lines[i].startsWith(start+"#"))) {
+                    String[] p = lines[i].split(" ");
                     String[] pp = p[0].split("#");
-                    Log.e("","nincs"+pp[1]);
                     String[] ido = pp[1].split(":");
+                    cal = (Calendar)calendar.clone();
                     cal.set(Calendar.HOUR, Integer.parseInt(ido[0]));
                     cal.set(Calendar.MINUTE, Integer.parseInt(ido[1]));
-                    for (Integer i = 1; i < p.length; i++) {
-                        if (p[i].startsWith(end)) {
-                            pp = p[i].split("#");
+                    for (Integer j = 1; j < p.length; j++) {
+                        if (p[j].startsWith(end)) {
+                            pp = p[j].split("#");
                             ido = pp[1].split(":");
+                            cal2 = (Calendar)calendar.clone();
                             cal2.set(Calendar.HOUR, Integer.parseInt(ido[0]));
                             cal2.set(Calendar.MINUTE, Integer.parseInt(ido[1]));
                             list.add(szamlalo, new Jarat(var, cal, cal2));
@@ -174,7 +156,6 @@ public class Main2Activity extends AppCompatActivity {
             }
         }
         catch (IOException e) {e.printStackTrace();}
-
         try
         {
             fis.getChannel().position(0);
