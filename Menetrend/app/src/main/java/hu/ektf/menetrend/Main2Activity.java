@@ -79,28 +79,27 @@ public class Main2Activity extends AppCompatActivity {
         //TODO read file
         String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
         File file = new File(sdCard+"/MenetrendData/menetrend.txt");
-        //InputStream is = getClass().getResourceAsStream("menetrend.txt");
         try {
             Integer szamlalo = 0;
             InputStream is = new FileInputStream(file);
             Reader reader = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(reader);
-            String[] lines = Load(file);
-            for (Integer i = 0; i < lines.length; i++){
-                //textView.append(lines[i]+"\n");
-                if ((lines[i].endsWith(" "+id.toString()) && lines[i].startsWith(start+"#"))) {
-                    String[] p = lines[i].split(" ");
+            //String[] lines = Load(file);
+            String line;
+            while ((line = br.readLine()) != null) {
+                if ((line.endsWith(" " + id.toString()) && line.startsWith(start + "#"))) {
+                    String[] p = line.split(" ");
                     String[] pp = p[0].split("#");
                     String[] ido = pp[1].split(":");
-                    cal = (Calendar)calendar.clone();
-                    cal.set(Calendar.HOUR, Integer.parseInt(ido[0]));
+                    cal = (Calendar) calendar.clone();
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ido[0]));
                     cal.set(Calendar.MINUTE, Integer.parseInt(ido[1]));
                     for (Integer j = 1; j < p.length; j++) {
                         if (p[j].startsWith(end)) {
                             pp = p[j].split("#");
                             ido = pp[1].split(":");
-                            cal2 = (Calendar)calendar.clone();
-                            cal2.set(Calendar.HOUR, Integer.parseInt(ido[0]));
+                            cal2 = (Calendar) calendar.clone();
+                            cal2.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ido[0]));
                             cal2.set(Calendar.MINUTE, Integer.parseInt(ido[1]));
                             list.add(szamlalo, new Jarat(var, cal, cal2));
                             szamlalo++;
@@ -110,14 +109,10 @@ public class Main2Activity extends AppCompatActivity {
                 }
             }
             br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.e("Read", "Nincs fájl"+e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("Read","NINCS"+e.getMessage());
-        }catch (Exception e){
-            Log.e("Read","nincs"+e.getMessage());
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
         Log.v("Read", "Done");
         JaratAdapter adapter = new JaratAdapter(Main2Activity.this, list);
@@ -128,16 +123,17 @@ public class Main2Activity extends AppCompatActivity {
     int getId(Date date) {
         String mmdd = DateFormat.format("mm-dd", date).toString();
         String dayOfWeek = DateFormat.format("EE", date).toString();
+
         if (mmdd == "12-24" || mmdd == "12-25" || mmdd == "12-26" || mmdd == "12-31" || mmdd == "01-01" || mmdd == "08-20" || mmdd == "10-23")
             return 4;
-        else if (dayOfWeek.toLowerCase() == "sunday")
+        else if (dayOfWeek.toLowerCase() == "sun")
             return 3;
-        else if (dayOfWeek.toLowerCase() == "saturday")
+        else if (dayOfWeek.toLowerCase() == "sat")
             return 2;
         else return 1;
     }
 
-    public static String[] Load(File file){
+   /* public static String[] Load(File file){
         FileInputStream fis = null;
         try
         {
@@ -174,7 +170,7 @@ public class Main2Activity extends AppCompatActivity {
         }
         catch (IOException e) {e.printStackTrace();}
         return array;
-    }
+    }*/
 
     @Override
     public void onStart() {
